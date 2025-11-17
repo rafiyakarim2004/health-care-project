@@ -1,0 +1,27 @@
+﻿  Main.cpp
+E:\Project\Project\Main.cpp(116,44): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(117,40): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(118,48): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(119,42): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(120,50): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(129,39): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(632,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+E:\Project\Project\Main.cpp(688,36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(689,64): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(690,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(690,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(708,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(708,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(726,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(727,61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(728,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(728,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(746,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(747,61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(748,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(748,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(766,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(767,65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(768,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Project\Project\Main.cpp(768,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Project.vcxproj -> E:\Project\Project\x64\Debug\Project.exe
