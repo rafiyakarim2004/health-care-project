@@ -1,5 +1,0 @@
-Medicine Name: Ibuprofen
-Price Per Piece: 30
-Description: NSAID - reduces inflammation & pain.
-Suggestions: Avoid if stomach ulcer
-------------------------------
