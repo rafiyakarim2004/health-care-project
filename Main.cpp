@@ -3,6 +3,7 @@
 #include "stb_easy_font.h"
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -109,7 +110,34 @@ vector<bool> medicineBought; // per medicine
 vector<bool> donorContacted; // per donor
 vector<bool> ambulanceContacted; // per ambulance
 
-// Scroll callback
+// ----------------- File Save Helpers -----------------
+void saveAppointmentToFile(const Doctor& d) {
+    ofstream file("appointments.txt", ios::app);
+    if (!file) return;
+
+    file << "Doctor Name: " << d.name << "\n";
+    file << "Department: " << d.department << "\n";
+    file << "District: " << d.district << "\n";
+    file << "Fee: " << d.fee << "\n";
+    file << "Rating: " << d.rating << "\n";
+    file << "Contact: " << d.contact << "\n";
+    file << "------------------------------\n";
+    file.close();
+}
+
+void saveMedicineToFile(const Medicine& m) {
+    ofstream file("medicine_sales.txt", ios::app);
+    if (!file) return;
+
+    file << "Medicine Name: " << m.name << "\n";
+    file << "Price Per Piece: " << m.pricePerPc << "\n";
+    file << "Description: " << m.description << "\n";
+    file << "Suggestions: " << m.suggestions << "\n";
+    file << "------------------------------\n";
+    file.close();
+}
+
+// ----------------- Scroll callbacks -----------------
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     float scrollSpeed = 30.0f;
     switch (currentSection) {
@@ -122,7 +150,6 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     }
 }
 
-// Popup scroll callback
 void popupScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     for (auto& p : popups) {
         if (p.win == window) {
@@ -136,7 +163,7 @@ void popupScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 void drawText(float x, float y, const string& text, float r = 1, float g = 1, float b = 1) {
     glColor3f(r, g, b);
     char buffer[99999];
-    int quads = stb_easy_font_print(x, y, (char*)text.c_str(), nullptr, buffer, sizeof(buffer));
+    int quads = stb_easy_font_print((float)x, (float)y, (char*)text.c_str(), nullptr, buffer, sizeof(buffer));
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(2, GL_FLOAT, 16, buffer);
     glDrawArrays(GL_QUADS, 0, quads * 4);
@@ -428,6 +455,13 @@ void renderDoctors(double mx, double my, bool click) {
         string summary = doc.name + " (" + doc.department + ")  Fee: Tk " + oss.str() + "  Rating: " + to_string(doc.rating) + "  Dist: " + doc.district;
         drawText(barX + 10, barY + 14, summary, 1, 1, 1);
 
+        // Book button on the right of each doctor entry
+        if (drawButton(barX + barW - 130, barY + 10, 100, 28, "Book", mx, my, click)) {
+            appointmentBooked[i] = true;
+            saveAppointmentToFile(doc);   // <-- SAVE TO FILE when book from list
+        }
+        if (appointmentBooked[i]) drawText(barX + barW - 230, barY + 16, "Booked", 0.4f, 1.0f, 0.4f);
+
         if (click && mx >= barX && mx <= barX + barW && my >= barY && my <= barY + barH) {
             openPopup(0, i, doc.name + " - Details");
         }
@@ -520,8 +554,10 @@ void renderMedicines(double mx, double my, bool click) {
         drawText(30, y + 18, "Desc: " + m.description);
         drawText(30, y + 34, "Side effects: " + m.sideEffects + "  Suggestion: " + m.suggestions);
 
-        if (drawButton(540, y - 8, 100, 40, "Buy", mx, my, click))
+        if (drawButton(540, y - 8, 100, 40, "Buy", mx, my, click)) {
             medicineBought[i] = true;
+            saveMedicineToFile(m); // <-- SAVE TO FILE when buying from list
+        }
 
         if (medicineBought[i]) drawText(650, y + 8, "Done!", 0.4f, 1.0f, 0.4f);
 
@@ -685,7 +721,10 @@ void renderPopups() {
                 y += 24;
             }
 
-            if (drawButton(260, ph - 60, 120, 30, "Appointment", pmx, pmy, click)) appointmentBooked[pop.index] = true;
+            if (drawButton(260, ph - 60, 120, 30, "Appointment", pmx, pmy, click)) {
+                appointmentBooked[pop.index] = true;
+                saveAppointmentToFile(d); // <-- SAVE TO FILE when booking in popup
+            }
             if (appointmentBooked[pop.index]) drawText(260, ph - 95, "Booked!", 0.4f, 1.0f, 0.4f);
             if (drawButton(pw - 90, ph - 40, 60, 28, "Close", pmx, pmy, click)) glfwSetWindowShouldClose(pop.win, true);
         }
@@ -723,7 +762,10 @@ void renderPopups() {
             y += 30;
             drawText(20, y, "Suggestion: " + m.suggestions);
 
-            if (drawButton(20, ph - 60, 100, 30, "Buy", pmx, pmy, click)) medicineBought[pop.index] = true;
+            if (drawButton(20, ph - 60, 100, 30, "Buy", pmx, pmy, click)) {
+                medicineBought[pop.index] = true;
+                saveMedicineToFile(m); // <-- SAVE TO FILE when buying in popup
+            }
             if (medicineBought[pop.index]) drawText(140, ph - 55, "Done!", 0.4f, 1.0f, 0.4f);
             if (drawButton(pw - 90, ph - 40, 60, 28, "Close", pmx, pmy, click)) glfwSetWindowShouldClose(pop.win, true);
         }
@@ -793,12 +835,16 @@ int main() {
         glOrtho(0, width, height, 0, -1, 1);
         glMatrixMode(GL_MODELVIEW); glLoadIdentity();
 
-        // Modern gradient-like background (dark blue-gray)
-        glClearColor(0.12f, 0.15f, 0.22f, 1.0f);
+        // Dark green background as requested
+        glClearColor(0.06f, 0.18f, 0.08f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        double mx, my;
-        glfwGetCursorPos(window, &mx, &my);
+        double mx_d, my_d;
+        glfwGetCursorPos(window, &mx_d, &my_d);
+        // Convert to same coordinate system (y down)
+        double mx = mx_d;
+        double my = my_d;
+
         bool mouseDownNow = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
         bool click = mouseDownNow && !mouseWasDown;
 
